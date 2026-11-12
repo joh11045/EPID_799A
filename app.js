@@ -12,7 +12,6 @@ const DEFAULTS = {
 const CONTROLS = [
   {
     key: "initialInfected",
-    rangeId: "initialInfectedRange",
     numberId: "initialInfectedNumber",
     min: 1,
     max: 1000,
@@ -20,7 +19,6 @@ const CONTROLS = [
   },
   {
     key: "infectiousPeriod",
-    rangeId: "infectiousPeriodRange",
     numberId: "infectiousPeriodNumber",
     min: 1,
     max: 60,
@@ -28,7 +26,6 @@ const CONTROLS = [
   },
   {
     key: "immunityDuration",
-    rangeId: "immunityDurationRange",
     numberId: "immunityDurationNumber",
     min: 1,
     max: 1080,
@@ -36,7 +33,6 @@ const CONTROLS = [
   },
   {
     key: "contactRate",
-    rangeId: "contactRateRange",
     numberId: "contactRateNumber",
     min: 0,
     max: 30,
@@ -44,7 +40,6 @@ const CONTROLS = [
   },
   {
     key: "infectionProbability",
-    rangeId: "infectionProbabilityRange",
     numberId: "infectionProbabilityNumber",
     min: 0,
     max: 1,
@@ -52,7 +47,6 @@ const CONTROLS = [
   },
   {
     key: "simulationLength",
-    rangeId: "simulationLengthRange",
     numberId: "simulationLengthNumber",
     min: 30,
     max: 3650,
@@ -72,6 +66,7 @@ const COLORS = {
 const form = document.getElementById("controls-form");
 const resetButton = document.getElementById("resetButton");
 const r0Value = document.getElementById("r0Value");
+const peakInfectedValue = document.getElementById("peakInfectedValue");
 const canvas = document.getElementById("sirsChart");
 const ctx = canvas.getContext("2d");
 let lastSimulationData = null;
@@ -104,30 +99,12 @@ function normalizeValue(value, control) {
 function setControlValue(control, value) {
   const normalized = normalizeValue(value, control);
   const displayValue = formatInputValue(normalized, control.step);
-  document.getElementById(control.rangeId).value = displayValue;
   document.getElementById(control.numberId).value = displayValue;
 }
 
-function setupLinkedInputs() {
+function setupNumberInputs() {
   CONTROLS.forEach((control) => {
-    const range = document.getElementById(control.rangeId);
     const number = document.getElementById(control.numberId);
-
-    range.addEventListener("input", () => {
-      number.value = range.value;
-    });
-
-    number.addEventListener("input", () => {
-      if (number.value === "") {
-        return;
-      }
-
-      const parsed = Number(number.value);
-      if (Number.isFinite(parsed)) {
-        const rangeValue = normalizeValue(parsed, control);
-        range.value = formatInputValue(rangeValue, control.step);
-      }
-    });
 
     number.addEventListener("blur", () => {
       setControlValue(control, number.value);
@@ -336,7 +313,10 @@ function drawGridAndAxes({ width, height, margin, plotWidth, plotHeight, maxDay,
 function runAndDrawSimulation() {
   const params = getParameters();
   const result = runSirsModel(params);
+  const peakInfected = Math.max(...result.data.infected);
+
   r0Value.textContent = result.r0.toFixed(2);
+  peakInfectedValue.textContent = Math.round(peakInfected).toLocaleString();
   lastSimulationData = result.data;
   drawChart(lastSimulationData);
 }
@@ -347,7 +327,7 @@ function redrawLastSimulation() {
   }
 }
 
-setupLinkedInputs();
+setupNumberInputs();
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   runAndDrawSimulation();
