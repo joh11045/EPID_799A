@@ -14,42 +14,42 @@ const CONTROLS = [
     key: "initialInfected",
     numberId: "initialInfectedNumber",
     min: 1,
-    max: 1000,
+    max: 2000,
     step: 1
   },
   {
     key: "infectiousPeriod",
     numberId: "infectiousPeriodNumber",
     min: 1,
-    max: 60,
+    max: 120,
     step: 1
   },
   {
     key: "immunityDuration",
     numberId: "immunityDurationNumber",
     min: 1,
-    max: 1080,
+    max: 2160,
     step: 1
   },
   {
     key: "contactRate",
     numberId: "contactRateNumber",
     min: 0,
-    max: 30,
+    max: 60,
     step: 0.1
   },
   {
     key: "infectionProbability",
     numberId: "infectionProbabilityNumber",
     min: 0,
-    max: 1,
+    max: 2,
     step: 0.01
   },
   {
     key: "simulationLength",
     numberId: "simulationLengthNumber",
     min: 30,
-    max: 3650,
+    max: 7300,
     step: 1
   }
 ];
