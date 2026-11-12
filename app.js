@@ -102,9 +102,17 @@ function setControlValue(control, value) {
   document.getElementById(control.numberId).value = displayValue;
 }
 
+function describeLimits(control) {
+  return `Allowed range: ${control.min} to ${control.max}; step size: ${control.step}.`;
+}
+
 function setupNumberInputs() {
   CONTROLS.forEach((control) => {
     const number = document.getElementById(control.numberId);
+    const limitDescription = describeLimits(control);
+
+    number.title = limitDescription;
+    number.setAttribute("aria-label", `${number.labels[0].textContent}. ${limitDescription}`);
 
     number.addEventListener("blur", () => {
       setControlValue(control, number.value);
