@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deterministic SIRS Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div>
+      <p class="eyebrow">Interactive disease model</p>
+      <h1>Deterministic SIRS Dashboard</h1>
+      <p class="lede">
+        Explore a closed population of 10,000 people moving between susceptible,
+        infected, recovered, and back to susceptible compartments in 1-day timesteps.
+      </p>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <section class="panel equations-panel" aria-labelledby="equations-title">
+      <div class="section-heading">
+        <p class="eyebrow">Model</p>
+        <h2 id="equations-title">SIRS equations</h2>
+      </div>
+
+      <div class="equations" aria-label="Differential equations">
+        <p><span>dS/dt</span> = -βSI/N + ωR</p>
+        <p><span>dI/dt</span> = βSI/N - γI</p>
+        <p><span>dR/dt</span> = γI - ωR</p>
+      </div>
+
+      <dl class="definitions">
+        <div>
+          <dt>β</dt>
+          <dd>contact rate × infection probability</dd>
+        </div>
+        <div>
+          <dt>γ</dt>
+          <dd>1 / infectious period</dd>
+        </div>
+        <div>
+          <dt>ω</dt>
+          <dd>1 / immunity duration</dd>
+        </div>
+        <div>
+          <dt>N</dt>
+          <dd>10,000</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="panel controls-panel" aria-labelledby="controls-title">
+      <div class="section-heading">
+        <p class="eyebrow">Inputs</p>
+        <h2 id="controls-title">Parameters</h2>
+      </div>
+
+      <form id="controls-form" class="controls-form">
+        <div class="control-group">
+          <label for="initialInfectedRange">Initial infected</label>
+          <div class="input-row">
+            <input id="initialInfectedRange" name="initialInfected" type="range" min="1" max="1000" step="1" value="1">
+            <input id="initialInfectedNumber" name="initialInfectedNumber" type="number" min="1" max="1000" step="1" value="1">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="infectiousPeriodRange">Infectious period, days</label>
+          <div class="input-row">
+            <input id="infectiousPeriodRange" name="infectiousPeriod" type="range" min="1" max="60" step="1" value="10">
+            <input id="infectiousPeriodNumber" name="infectiousPeriodNumber" type="number" min="1" max="60" step="1" value="10">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="immunityDurationRange">Immunity duration, days</label>
+          <div class="input-row">
+            <input id="immunityDurationRange" name="immunityDuration" type="range" min="1" max="1080" step="1" value="90">
+            <input id="immunityDurationNumber" name="immunityDurationNumber" type="number" min="1" max="1080" step="1" value="90">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="contactRateRange">Contact rate, contacts per day</label>
+          <div class="input-row">
+            <input id="contactRateRange" name="contactRate" type="range" min="0" max="30" step="0.1" value="5">
+            <input id="contactRateNumber" name="contactRateNumber" type="number" min="0" max="30" step="0.1" value="5">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="infectionProbabilityRange">Infection probability per contact</label>
+          <div class="input-row">
+            <input id="infectionProbabilityRange" name="infectionProbability" type="range" min="0" max="1" step="0.01" value="0.1">
+            <input id="infectionProbabilityNumber" name="infectionProbabilityNumber" type="number" min="0" max="1" step="0.01" value="0.1">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="simulationLengthRange">Simulation length, days</label>
+          <div class="input-row">
+            <input id="simulationLengthRange" name="simulationLength" type="range" min="30" max="3650" step="1" value="1080">
+            <input id="simulationLengthNumber" name="simulationLengthNumber" type="number" min="30" max="3650" step="1" value="1080">
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button type="submit" class="primary-button">Run simulation</button>
+          <button type="button" id="resetButton" class="secondary-button">Reset defaults</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel output-panel" aria-labelledby="output-title">
+      <div class="output-header">
+        <div class="section-heading">
+          <p class="eyebrow">Output</p>
+          <h2 id="output-title">Population over time</h2>
+        </div>
+        <div class="r0-card" aria-live="polite">
+          <span>R<sub>0</sub></span>
+          <strong id="r0Value">5.00</strong>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <canvas id="sirsChart" width="960" height="540" aria-label="Line chart of susceptible, infected, and recovered populations over time" role="img"></canvas>
+      </div>
+
+      <div class="legend" aria-label="Chart legend">
+        <span><i class="legend-key susceptible"></i>Susceptible</span>
+        <span><i class="legend-key infected"></i>Infected</span>
+        <span><i class="legend-key recovered"></i>Recovered</span>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
